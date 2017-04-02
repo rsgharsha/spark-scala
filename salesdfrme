@@ -1,0 +1,18 @@
+val customSchema = StructType(Array(
+StructField("Transaction_date",StringType, true),
+StructField("Product",StringType, true),
+StructField("Price",IntegerType, true),
+StructField("Payment_Type",StringType,true),
+StructField("Name",StringType,true),
+StructField("City",StringType,true),
+StructField("State",StringType,true),
+StructField("Country",StringType,true),
+StructField("Account_Created",StringType,true),
+StructField("Last_Login",StringType,true),
+StructField("Latitude",StringType,true),
+StructField("Longitude",StringType,true)))
+val df=new SQLContext(sc).read.format("com.databricks.spark.csv").option("header","true")
+       .schema(customSchema).load("file:///home/ubuntu/SalesJan2009.csv")
+df.createOrReplaceTempView("sales")
+sql("select City,Product,count(*) as cnt from sales group by City,Product order by cnt desc")
+sql("select count(*) from sales where Country like '%United States%' ")

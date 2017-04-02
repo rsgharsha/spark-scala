@@ -1,0 +1,27 @@
+import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType}
+import org.apache.spark.sql.SQLContext
+val sqlContext = new SQLContext(sc)
+val customSchema = StructType(Array(
+    StructField("ip_address", StringType, true),
+    StructField("c1", StringType, true),
+    StructField("c2", StringType, true),
+    StructField("date", StringType, true),
+    StructField("time", StringType, true),
+    StructField("url_type", StringType, true),
+    StructField("numb", StringType, true),
+    StructField("prt_num",StringType, true),
+    StructField("url", StringType, true),
+    StructField("full_url", StringType, true) 
+         ))
+
+val df = sqlContext.read.format("com.databricks.spark.csv").option("header", "false").option("inferSchema", "false").option("delimiter"," ").schema(customSchema).load("file:///home/ubuntu/sample_log")
+df.printSchema() //prints the schmea
+df.show() //prints sample record
+df.createOrReplaceTempView("ip_info")
+
+sql("select count(distinct ip_address) from ip_info")
+sql("select count(*) from ip_info where full_url like '%www.bing.com%' ")
+sql("select count(*) from ip_info where full_url like '%www.bing%' ").write.format("com.databricks.spark.csv").save("/home/bing")
+ //regular expr
+ d.map(x=>x.replaceAll("(\".*),(.*\")","$1 $2"))
+   
